@@ -11,10 +11,10 @@ fn main() {
     let mut pos = 0;
     let mut buf = [0u8; BYTES_PER_LINE];
 
-    while let Ok(bytes_read) = file.read_exact(&mut buf) {
+    while let Ok(_) = file.read_exact(&mut buf) {
         print!("[0x{:08x}] ", pos);
-        for byte in &buf {
-            match *byte {
+        for &byte in &buf {
+            match byte {
                 0x00 => print!(".  "),
                 0xff => print!("## "),
                 _ => print!("{:02x} ", byte),
