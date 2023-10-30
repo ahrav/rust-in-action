@@ -39,7 +39,9 @@ impl CPU {
             self.program_counter += 2;
 
             match opcode {
-                0x0000 => { return;}
+                0x0000 => {
+                    return;
+                }
                 0x00E0 => self.cls(),
                 0x00EE => self.ret(),
                 0x1000..=0x1FFF => self.jmp(nnn),
@@ -49,16 +51,14 @@ impl CPU {
                 0x5000..=0x5FFF => self.se(x, y),
                 0x6000..=0x6FFF => self.ld(x, kk),
                 0x7000..=0x7FFF => self.add(x, kk),
-                0x800..=0x8FFF => {
-                    match op_minor {
-                        0x0 => self.ld(x, self.registers[y as usize]),
-                        0x1 => self.or_xy(x, y),
-                        0x2 => self.and_xy(x, y),
-                        0x3 => self.xor_xy(x, y),
-                        0x4 => self.add_xy(x, y),
-                        _ => panic!("Unknown opcode: {:X}", opcode),
-                    }
-                }
+                0x800..=0x8FFF => match op_minor {
+                    0x0 => self.ld(x, self.registers[y as usize]),
+                    0x1 => self.or_xy(x, y),
+                    0x2 => self.and_xy(x, y),
+                    0x3 => self.xor_xy(x, y),
+                    0x4 => self.add_xy(x, y),
+                    _ => panic!("Unknown opcode: {:X}", opcode),
+                },
                 _ => panic!("Unknown opcode: {:X}", opcode),
             }
         }
@@ -140,18 +140,22 @@ impl CPU {
     }
 }
 
-
 fn main() {
     let mut cpu = CPU::new();
     cpu.registers[0] = 5;
     cpu.registers[1] = 10;
 
-    cpu.memory[0x000] = 0x21; cpu.memory[0x001] = 0x00;
-    cpu.memory[0x002] = 0x21; cpu.memory[0x003] = 0x00;
+    cpu.memory[0x000] = 0x21;
+    cpu.memory[0x001] = 0x00;
+    cpu.memory[0x002] = 0x21;
+    cpu.memory[0x003] = 0x00;
 
-    cpu.memory[0x100] = 0x80; cpu.memory[0x101] = 0x14;
-    cpu.memory[0x102] = 0x80; cpu.memory[0x103] = 0x14;
-    cpu.memory[0x104] = 0x00; cpu.memory[0x105] = 0xEE;
+    cpu.memory[0x100] = 0x80;
+    cpu.memory[0x101] = 0x14;
+    cpu.memory[0x102] = 0x80;
+    cpu.memory[0x103] = 0x14;
+    cpu.memory[0x104] = 0x00;
+    cpu.memory[0x105] = 0xEE;
 
     cpu.run();
 
